@@ -71,4 +71,4 @@ def background_thread():
 
 if __name__ == '__main__':
     eventlet.spawn(background_thread)
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
