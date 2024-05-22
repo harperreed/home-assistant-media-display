@@ -39,10 +39,10 @@
     <div class="content">
         <h1 id="media_title">Loading...</h1>
         <h2 id="media_artist"></h2>
-        <div class="progress-bar">
+        <!-- <div class="progress-bar">
             <div class="progress" id="progress"></div>
         </div>
-        <p id="time">0:00 / 0:00</p>
+        <p id="time">0:00 / 0:00</p> -->
         <p id="volume">Volume: 0%</p>
     </div>
 
@@ -79,28 +79,28 @@
             durationSeconds = media.media_duration;
 
 
-            const progressElement = document.getElementById('progress');
-            if (durationSeconds > 0) {
-                const progress = (currentSeconds / durationSeconds) * 100;
-                progressElement.style.width = progress + '%';
-                document.getElementById('time').textContent = `${formatTime(currentSeconds)} / ${formatTime(durationSeconds)}`;
-            } else {
-                progressElement.style.width = '0%';
-                document.getElementById('time').textContent = '0:00 / 0:00';
-            }
+            // const progressElement = document.getElementById('progress');
+            // if (durationSeconds > 0) {
+            //     const progress = (currentSeconds / durationSeconds) * 100;
+            //     progressElement.style.width = progress + '%';
+            //     document.getElementById('time').textContent = `${formatTime(currentSeconds)} / ${formatTime(durationSeconds)}`;
+            // } else {
+            //     progressElement.style.width = '0%';
+            //     document.getElementById('time').textContent = '0:00 / 0:00';
+            // }
              }
         });
 
         // Simulate the progress bar movement
-        setInterval(() => {
-            const progressElement = document.getElementById('progress');
-            if (currentSeconds < durationSeconds) {
-                currentSeconds += 1;
-                const progress = (currentSeconds / durationSeconds) * 100;
-                progressElement.style.width = progress + '%';
-                document.getElementById('time').textContent = `${formatTime(currentSeconds)} / ${formatTime(durationSeconds)}`;
-            }
-        }, 1000);
+        // setInterval(() => {
+        //     const progressElement = document.getElementById('progress');
+        //     if (currentSeconds < durationSeconds) {
+        //         currentSeconds += 1;
+        //         const progress = (currentSeconds / durationSeconds) * 100;
+        //         progressElement.style.width = progress + '%';
+        //         document.getElementById('time').textContent = `${formatTime(currentSeconds)} / ${formatTime(durationSeconds)}`;
+        //     }
+        // }, 1000);
     </script>
 </body>
 </html>
