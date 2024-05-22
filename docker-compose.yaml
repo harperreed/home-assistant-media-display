@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  flaskapp:
+    build: .
+    ports:
+      - "5000:5000"
+    # environment:
+    #   - BASE_URL=http://homeassistant.local:8123
+    #   - API_TOKEN=YOUR_LONG_LIVED_ACCESS_TOKEN
+    #   - ENTITY_ID=media_player.YOUR_MEDIA_PLAYER_ENTITY_ID
+    volumes:
+      - .:/app
