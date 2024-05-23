@@ -69,14 +69,16 @@ def get_fip_metadata(station_name):
             logging.info("Successfully fetched FIP metadata")
             fip_metadata = response.json()
             logging.debug(f"FIP metadata: {fip_metadata}")
+            print(datetime.datetime.fromtimestamp(fip_metadata['now']['endTime']).isoformat())
+            media_position = (datetime.datetime.fromtimestamp(time.time())- datetime.datetime.fromtimestamp(fip_metadata['now']['startTime'])).total_seconds()
+            media_duration = (datetime.datetime.fromtimestamp(fip_metadata['now']['endTime'])- datetime.datetime.fromtimestamp(fip_metadata['now']['startTime'])).total_seconds()
             return {
                 'media_title': fip_metadata['now']['firstLine']['title'],
                 'media_artist': fip_metadata['now']['secondLine']['title'],
-                'media_starttime': fip_metadata['now']['startTime'],
-                'media_endtime': fip_metadata['now']['endTime'],
-                'media_position': 0,
-                'media_duration': 0,
-                'media_volume': 0,
+                'media_starttime': datetime.datetime.fromtimestamp(fip_metadata['now']['startTime']).isoformat(),
+                'media_endtime': datetime.datetime.fromtimestamp(fip_metadata['now']['endTime']).isoformat(),
+                'media_position': media_position,
+                'media_duration': media_duration,
                 'cover_art_url': fip_metadata['now']['visuals']['card']['src'].replace('200x200','400x400'),
                 'full_metadata': fip_metadata,
             }
@@ -89,7 +91,6 @@ def get_fip_metadata(station_name):
                 'media_endtime': 0,
                 'media_starttime': 0,
                 'media_duration': 0,
-                'media_volume': 0,
                 'cover_art_url': None
             }
     except requests.RequestException as e:
