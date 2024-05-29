@@ -42,7 +42,8 @@ station_map = {
     "Tout nouveau, tout FIP": "fip_nouveautes",
     "FIP autour de l’électro": "fip_electro",
     "FIP (hls)": "fip",
-    "FIP (hifi)": "fip"
+    "FIP (hifi)": "fip",
+    "fip-hifi.aac": "fip"
 }
 
 
@@ -69,7 +70,7 @@ def get_fip_metadata(station_name):
             logging.info("Successfully fetched FIP metadata")
             fip_metadata = response.json()
             logging.debug(f"FIP metadata: {fip_metadata}")
-            print(datetime.datetime.fromtimestamp(fip_metadata['now']['endTime']).isoformat())
+            # print(datetime.datetime.fromtimestamp(fip_metadata['now']['endTime']).isoformat())
             media_position = (datetime.datetime.fromtimestamp(time.time())- datetime.datetime.fromtimestamp(fip_metadata['now']['startTime'])).total_seconds()
             media_duration = (datetime.datetime.fromtimestamp(fip_metadata['now']['endTime'])- datetime.datetime.fromtimestamp(fip_metadata['now']['startTime'])).total_seconds()
             return {
@@ -116,7 +117,8 @@ def get_media_state():
             data = response.json()
             media_volume = data['attributes'].get('volume_level', 0) * 100  # Convert to percentage
             media_title = data['attributes'].get('media_title', 'Unknown')
-            if "FIP" in media_title:
+            # print(media_title)
+            if "FIP" in media_title or "fip" in media_title:
                 fip_data = get_fip_metadata(media_title)
                 media_title = fip_data['media_title']
                 media_artist = fip_data['media_artist']
@@ -171,8 +173,8 @@ def get_media_state():
                 song_end = datetime.datetime.fromtimestamp(song_end).isoformat()
 
 
-                print(song_start)
-                print(song_end)
+                # print(song_start)
+                # print(song_end)
                 media_endtime = song_end
                 media_starttime = song_start
 
