@@ -1,106 +1,128 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Now Playing</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
-    <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: Arial, sans-serif;
-            color: white;
-            text-align: center;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-        .content {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 20px;
-            border-radius: 10px;
-        }
-        .progress-bar {
-            width: 100%;
-            background-color: #ddd;
-        }
-        .progress {
-            width: 0%;
-            height: 20px;
-            background-color: #4caf50;
-        }
-    </style>
-</head>
-<body id="body">
-    <div class="content">
-        <h1 id="media_title">Loading...</h1>
-        <h2 id="media_artist"></h2>
-        <!-- <div class="progress-bar">
-            <div class="progress" id="progress"></div>
-        </div>
-        <p id="time">0:00 / 0:00</p> -->
-        <p id="volume">Volume: 0%</p>
-    </div>
-
-    <script>
-        var socket = io();
-        var currentSeconds = 0;
-        var durationSeconds = 0;
-        var current_song = '';
-
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-        }
-
-        socket.on('media_state', function(media) {
-            console.log(media)
-            document.getElementById('volume').textContent = `Volume: ${Math.round(media.media_volume)}%`;
-
-            if (media.media_title == current_song) {
-                return;
-            } else{
-                current_song = media.media_title;
-
-            document.getElementById('media_title').textContent = media.media_title;
-            document.getElementById('media_artist').textContent = media.media_artist;
-            if (media.cover_art_url) {
-                document.getElementById('body').style.backgroundImage = 'url(' + media.cover_art_url + ')';
-            } else {
-                document.getElementById('body').style.backgroundImage = '';
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Now Playing</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+        <style>
+            body,
+            html {
+                height: 100%;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: Arial, sans-serif;
+                color: white;
+                text-align: center;
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
             }
+            .content {
+                background: rgba(0, 0, 0, 0.5);
+                padding: 20px;
+                border-radius: 10px;
+            }
+            .progress-bar {
+                width: 100%;
+                background-color: #ddd;
+            }
+            .progress {
+                width: 0%;
+                height: 20px;
+                background-color: #4caf50;
+            }
+        </style>
+    </head>
+    <body id="body">
+        <div class="content">
+            <h1 id="media_title">Loading...</h1>
+            <h2 id="media_artist"></h2>
+            <!-- <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <p id="time">0:00 / 0:00</p> -->
+            <p id="volume">Volume: 0%</p>
+        </div>
 
-            currentSeconds = media.media_position;
-            durationSeconds = media.media_duration;
+        <script>
+        var socket = io();
+               var currentSeconds = 0;
+               var durationSeconds = 0;
+               var current_song = "";
+               var media_starttime = 0;
 
+               function formatTime(seconds) {
+                   const minutes = Math.floor(seconds / 60);
+                   const secs = Math.floor(seconds % 60);
+                   return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+               }
 
-            // const progressElement = document.getElementById('progress');
-            // if (durationSeconds > 0) {
-            //     const progress = (currentSeconds / durationSeconds) * 100;
-            //     progressElement.style.width = progress + '%';
-            //     document.getElementById('time').textContent = `${formatTime(currentSeconds)} / ${formatTime(durationSeconds)}`;
-            // } else {
-            //     progressElement.style.width = '0%';
-            //     document.getElementById('time').textContent = '0:00 / 0:00';
-            // }
-             }
-        });
+               socket.on("media_state", function (media) {
+                   console.log(media);
+                   document.getElementById("volume").textContent =
+                       `Volume: ${Math.round(media.media_volume)}%`;
+                   const progressElement = document.getElementById("progress");
 
-        // Simulate the progress bar movement
-        // setInterval(() => {
-        //     const progressElement = document.getElementById('progress');
-        //     if (currentSeconds < durationSeconds) {
-        //         currentSeconds += 1;
-        //         const progress = (currentSeconds / durationSeconds) * 100;
-        //         progressElement.style.width = progress + '%';
-        //         document.getElementById('time').textContent = `${formatTime(currentSeconds)} / ${formatTime(durationSeconds)}`;
-        //     }
-        // }, 1000);
-    </script>
-</body>
+                   if (media.media_title == current_song) {
+                       // Update the progress bar and time display
+                       updateProgressBar(media.media_starttime, media.media_endtime);
+                   } else {
+                       current_song = media.media_title;
+
+                       document.getElementById("media_title").textContent =
+                           media.media_title;
+                       document.getElementById("media_artist").textContent =
+                           media.media_artist;
+                       if (media.cover_art_url) {
+                           document.getElementById("body").style.backgroundImage =
+                               "url(" + media.cover_art_url + ")";
+                       } else {
+                           document.getElementById("body").style.backgroundImage =
+                               "";
+                       }
+
+                       // Store the start time of the new song
+                       media_starttime = new Date(media.media_starttime).getTime();
+
+                       // Calculate the duration and update the progress bar and time display
+                       durationSeconds = (new Date(media.media_endtime).getTime() - media_starttime) / 1000;
+                       updateProgressBar(media_starttime, media.media_endtime);
+                   }
+               });
+
+               function updateProgressBar(startTime, endTime) {
+                   const progressElement = document.getElementById('progress');
+                   currentSeconds = Math.max(0, (Date.now() - startTime) / 1000);
+                   if (currentSeconds <= durationSeconds) {
+                       const progress = (currentSeconds / durationSeconds) * 100;
+                       progressElement.style.width = progress + '%';
+                       document.getElementById('time').textContent = `${formatTime(currentSeconds)} / ${formatTime(durationSeconds)}`;
+                   } else {
+                       progressElement.style.width = '0%';
+                       document.getElementById('time').textContent = '0:00 / 0:00';
+                   }
+               }
+
+               // Update the progress bar every second
+               setInterval(() => {
+                   if (media_starttime !== 0) {
+                       updateProgressBar(media_starttime, media_starttime + durationSeconds * 1000);
+                   }
+               }, 1000);
+
+               // Calculate the initial position when the page is loaded
+               socket.on("connect", function () {
+                   socket.emit("get_media_state", function (media) {
+                       if (media && media.media_starttime) {
+                           media_starttime = new Date(media.media_starttime).getTime();
+                           durationSeconds = (new Date(media.media_endtime).getTime() - media_starttime) / 1000;
+                           updateProgressBar(media_starttime, media.media_endtime);
+                       }
+                   });
+               });
+        </script>
+    </body>
 </html>
